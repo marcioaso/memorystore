@@ -6,7 +6,7 @@ describe('Messages model', () => {
     let messagesStore;
 
     beforeEach(() => {
-        messagesStore = store('messages');
+        messagesStore = store('message');
         messagesStore.entries = {};
         messagesStore.sequence = 0;
     });

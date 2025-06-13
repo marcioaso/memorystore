@@ -2,7 +2,7 @@ import store from '../../db/index.js';
 import sharedHelpers from '../../db/helpers.js';
 import { MessageModel as template } from './model.js';
 
-const storeName = 'messages';
+const storeName = 'message';
 
 export default function(data = {}) {
     const newMessage = {
