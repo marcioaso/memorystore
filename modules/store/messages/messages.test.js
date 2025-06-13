@@ -8,7 +8,7 @@ describe('Messages model', () => {
     beforeEach(() => {
         messagesStore = store('messages');
         messagesStore.entries = {};
-        messagesStore.sequence = 1;
+        messagesStore.sequence = 0;
     });
 
     it('should create a message with default values', () => {
@@ -169,5 +169,16 @@ describe('Messages model', () => {
         expect(comments.length).toBe(2);
         expect(comments.map(c => c.id)).toEqual([comment1.id, comment2.id]);
         expect(comments.every(c => c.parent_id === root.id)).toBe(true);
+    });
+
+    it('should remove a message instance from the store and delete its id', () => {
+        const msg = Messages({ user_id: 1, content: 'To be removed', messages: [], likes: [] });
+        msg.save();
+        expect(messagesStore.getById(msg.id)).toEqual(msg);
+
+        const removed = msg.remove();
+        expect(removed).toBe(msg);
+        expect(msg.id).toBeUndefined();
+        expect(messagesStore.getById(removed.id)).toBeNull();
     });
 });

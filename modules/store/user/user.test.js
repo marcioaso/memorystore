@@ -61,4 +61,15 @@ describe('User model', () => {
         const notFound = user.byEmail('nope@example.com');
         expect(notFound).toBeNull();
     });
+    
+    it('should remove a user instance from the store and delete its id', () => {
+        const user = User({ name: 'Remove Me', email: 'remove@example.com' });
+        user.save();
+        expect(userStore.getById(user.id)).toEqual(user);
+
+        const removed = user.remove();
+        expect(removed).toBe(user);
+        expect(user.id).toBeUndefined();
+        expect(userStore.getById(removed.id)).toBeNull();
+    });
 });
