@@ -1,15 +1,16 @@
 {
-  "name": "store",
+  "name": "memory-store",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
+  "files": [
+    "index.js",
+    "modules/**/*.js"
+  ],
   "scripts": {
     "test": "vitest"
   },
-  "author": "",
+  "author": "Your Name",
   "license": "ISC",
-  "description": "",
-  "devDependencies": {
-    "vitest": "^3.2.3"
-  }
+  "description": "A brief description of your module"
 }

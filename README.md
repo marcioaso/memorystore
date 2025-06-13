@@ -15,6 +15,22 @@ The core is a generic store module, with example modules for `User` and `Message
 
 ---
 
+## Installation
+
+```bash
+npm install your-module-name
+```
+
+## Usage
+
+```javascript
+import { User, Message, Session } from 'your-module-name';
+
+const user = User({ name: 'Test User', email: 'testuser@example.com' });
+const session = Session({ user_id: user.id, token: 'usertoken' });
+console.log(session.user());
+```
+
 ## Core: `modules/store/db`
 
 The core store provides a simple API for managing named collections.
