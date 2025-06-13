@@ -1,14 +1,19 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import store from '../../db/index.js';
 import Session from './index.js';
+import User from '../user/index.js';
 
 describe('Sessions Module', () => {
     let sessionStore;
+    let userStore;
 
     beforeEach(() => {
         sessionStore = store('session');
         sessionStore.entries = {};
         sessionStore.sequence = 0;
+        userStore = store('user');
+        userStore.entries = {};
+        userStore.sequence = 0;
     });
 
     it('should create and save a session', () => {
@@ -99,5 +104,15 @@ describe('Sessions Module', () => {
         session.logout();
         expect(session.id).toBeUndefined();
         expect(sessionStore.getById(session.id)).toBeNull();
+    });
+
+    it('should return the correct user from session.user()', () => {
+        // Create and save a user
+        const user = User({ name: 'Test User', email: 'testuser@example.com' });
+        userStore.add(user);
+        const session = Session({ user_id: user.id, token: 'usertoken' });
+        session.save();
+        const foundUser = session.user();
+        expect(foundUser).toEqual(user);
     });
 }); 

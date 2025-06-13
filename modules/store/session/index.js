@@ -3,6 +3,7 @@ import sharedPrototype from '../../db/prototype.js';
 import { generateToken } from '../../db/utils.js';
 import { SessionModel as template } from './model.js';
 import { getExpiresAt } from './utils.js';
+import { User } from '../index.js';
 
 const storeName = 'session';
 
@@ -17,6 +18,9 @@ export default function(data = {}) {
     };
     Object.setPrototypeOf(newSession, { // won't appear in Object.keys()
         ...sharedPrototype(storeName),
+        user() {
+            return User().byId(this.user_id)
+        },
         updateExpired() {
             const sessionStore = store(storeName);
             sessionStore.update({
