@@ -108,21 +108,21 @@ describe('Messages model', () => {
 
         const comment1 = root.comment({ user_id: 2, content: 'First comment', messages: [], likes: [] });
         expect(comment1.parent_id).toBe(root.id);
-        expect(root.messages).toContain(comment1.id);
+        expect(root.message_ids).toContain(comment1.id);
 
         const wrappedComment1 = Messages(messagesStore.getById(comment1.id));
         const comment2 = wrappedComment1.comment({ user_id: 3, content: 'Reply to first comment', messages: [], likes: [] });
         expect(comment2.parent_id).toBe(comment1.id);
-        expect(wrappedComment1.messages).toContain(comment2.id);
+        expect(wrappedComment1.message_ids).toContain(comment2.id);
 
         const wrappedComment2 = Messages(messagesStore.getById(comment2.id));
         const comment3 = wrappedComment2.comment({ user_id: 4, content: 'Reply to reply', messages: [], likes: [] });
         expect(comment3.parent_id).toBe(comment2.id);
-        expect(wrappedComment2.messages).toContain(comment3.id);
+        expect(wrappedComment2.message_ids).toContain(comment3.id);
 
-        expect(root.messages).toContain(comment1.id);
-        expect(wrappedComment1.messages).toContain(comment2.id);
-        expect(wrappedComment2.messages).toContain(comment3.id);
+        expect(root.message_ids).toContain(comment1.id);
+        expect(wrappedComment1.message_ids).toContain(comment2.id);
+        expect(wrappedComment2.message_ids).toContain(comment3.id);
     });
 
     it('should throw if comment content is missing', () => {
@@ -154,14 +154,14 @@ describe('Messages model', () => {
     });
 
     it('getComments should return all direct child comments', () => {
-        const root = Messages({ user_id: 1, content: 'Root', messages: [], likes: [] });
+        const root = Messages({ user_id: 1, content: 'Root', message_ids: [], likes: [] });
         messagesStore.add(root);
 
-        const comment1 = root.comment({ user_id: 2, content: 'First comment', messages: [], likes: [] });
-        const comment2 = root.comment({ user_id: 3, content: 'Second comment', messages: [], likes: [] });
+        const comment1 = root.comment({ user_id: 2, content: 'First comment', message_ids: [], likes: [] });
+        const comment2 = root.comment({ user_id: 3, content: 'Second comment', message_ids: [], likes: [] });
 
         const wrappedComment1 = Messages(messagesStore.getById(comment1.id));
-        wrappedComment1.comment({ user_id: 4, content: 'Nested comment', messages: [], likes: [] });
+        wrappedComment1.comment({ user_id: 4, content: 'Nested comment', message_ids: [], likes: [] });
 
         const rootWrapped = Messages(messagesStore.getById(root.id));
         const comments = rootWrapped.getComments();

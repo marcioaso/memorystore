@@ -1,8 +1,8 @@
 import store from '../../db/index.js';
 import sharedPrototype from '../../db/prototype.js';
-import { MessageModel as template } from './model.js';
+import { ChannelModel as template } from './model.js';
 
-const storeName = 'message';
+const storeName = 'channel';
 
 export default function(data = {}) {
     const newMessage = {
@@ -43,7 +43,7 @@ export default function(data = {}) {
         },
         getComments() {
             const messageStore = store(storeName);
-            return this.message_ids.map(commentId => messageStore.getById(commentId)).filter(Boolean);
+            return this.messages.map(commentId => messageStore.getById(commentId)).filter(Boolean);
         },
         comment(messageData) {
             const messageStore = store(storeName);
@@ -57,7 +57,7 @@ export default function(data = {}) {
             };
 
             const comment = messageStore.add(newComment);
-            this.message_ids.push(comment.id);
+            this.messages.push(comment.id);
             this.updatedAt = new Date().getTime();
             messageStore.update(this.id, this);
             return comment;

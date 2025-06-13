@@ -3,5 +3,5 @@ export const MessageModel = {
     content: '',
     likes: [],
     parent_id: null,
-    messages: [],
+    message_ids: [],
 }
