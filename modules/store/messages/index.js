@@ -1,6 +1,7 @@
 import store from '../db/index.js';
 import sharedHelpers from '../db/helpers.js';
 import { MessageModel as template } from './model.js';
+import user from '../user/index.js';
 
 const storeName = 'messages';
 
@@ -11,11 +12,8 @@ export default function(data = {}) {
         createdAt: new Date().getTime(),
         updatedAt: new Date().getTime(),
     };
-    Object.setPrototypeOf(newMessage, {
+    Object.setPrototypeOf(newMessage, { // won't appear in Object.keys()
         ...sharedHelpers(storeName),
-        byId(id) {
-            return store(storeName).getById(id) || null;
-        },
         byUserId(userId) {
             return store(storeName).getAll()
                 .filter(message => message.user_id === userId);
@@ -25,30 +23,24 @@ export default function(data = {}) {
                 .filter(message => message.parent_id === parentId);
         },
         like(userId) {
-            const messageStore = store(storeName);
             if (!userId) throw new Error('User ID is required to like a message');
+            if (this.likes.includes(userId)) return false;
+            this.likes.push(userId);
+            this.updatedAt = new Date().getTime();
 
-            const message = messageStore.getById(this.id);
-            if (message && !message.likes.includes(userId)) {
-                message.likes.push(userId);
-                message.updatedAt = new Date().getTime();
-                messageStore.update(this.id, message);
-                return true;
-            }
-            return false;
+            const messageStore = store(storeName);
+            messageStore.update(this.id, this);
+            return true;
         },
         unlike(userId) {
-            const messageStore = store(storeName);
             if (!userId) throw new Error('User ID is required to unlike a message');
+            if (!this.likes.includes(userId)) return false;
+            this.likes = this.likes.filter(id => id !== userId);
+            this.updatedAt = new Date().getTime();
 
-            const message = messageStore.getById(this.id);
-            if (message && message.likes.includes(userId)) {
-                message.likes = message.likes.filter(id => id !== userId);
-                message.updatedAt = new Date().getTime();
-                messageStore.update(this.id, message);
-                return true;
-            }
-            return false;
+            const messageStore = store(storeName);
+            messageStore.update(this.id, this);
+            return true;
         },
         getComments() {
             const messageStore = store(storeName);
@@ -60,16 +52,16 @@ export default function(data = {}) {
                 throw new Error('Message content is required to comment');
             }
 
-            const comment = {
+            const newComment = {
                 ...messageData,
                 parent_id: this.id,
             };
 
-            const addedComment = messageStore.add(comment);
-            this.messages.push(addedComment.id);
+            const comment = messageStore.add(newComment);
+            this.messages.push(comment.id);
             this.updatedAt = new Date().getTime();
             messageStore.update(this.id, this);
-            return addedComment;
+            return comment;
         }
     });
     return newMessage;

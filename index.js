@@ -1,3 +1,5 @@
-import { User, Messages } from './modules/store/index.js';
+import { User, Message } from './modules/store/index.js';
 
-console.log(User(), Messages());
+const user = User()
+const message = Message()
+console.log(Object.keys(user), Object.keys(message));

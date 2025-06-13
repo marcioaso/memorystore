@@ -1,4 +1,4 @@
 import User from './user/index.js';
-import Messages from './messages/index.js';
+import Message from './messages/index.js';
 
-export { User, Messages };
+export { User, Message };

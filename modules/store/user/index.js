@@ -11,11 +11,8 @@ export default function(data = {}) {
         createdAt: new Date().getTime(),
         updatedAt: new Date().getTime(),
     };
-    Object.setPrototypeOf(newUser, {
+    Object.setPrototypeOf(newUser, { // won't appear in Object.keys()
         ...sharedHelpers(storeName),
-        byId(id) {
-            return store(storeName).getById(id) || null;
-        },
         byEmail(email) {
             return store(storeName).getAll()
                 .find(user => user.email === email) || null;
