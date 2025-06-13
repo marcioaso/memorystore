@@ -1,8 +1,5 @@
 const collections = {}
 const store = {
-    name: null,
-    sequence: 0,
-    entries: {},
     getAll: function() {
         return Object.values(this.entries);
     },
@@ -31,17 +28,15 @@ const store = {
     },
 }
 
-module.exports = {
-    instance: name => {
-        if (!name) throw new Error('Store name is required');
-        if (!collections[name]) {
-            const storage = Object.assign({
-                name,
-                sequence: 0,
-                entries: {},
-            }, store);
-            collections[name] = storage;
-        }
-        return collections[name];
+export default function(name) {
+    if (!name) throw new Error('Store name is required');
+    if (!collections[name]) {
+        const storage = Object.assign({
+            name,
+            sequence: 0,
+            entries: {},
+        }, store);
+        collections[name] = storage;
     }
+    return collections[name];
 };

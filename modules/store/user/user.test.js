@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import store from './db';
-import User from './user.js';
+import store from '../db/index.js';
+import User from './index.js';
 
 describe('User model', () => {
     let userStore;
 
     beforeEach(() => {
-        userStore = store.instance('user');
+        userStore = store('user');
         userStore.entries = {};
         userStore.sequence = 1;
     });
@@ -23,8 +23,7 @@ describe('User model', () => {
         const user = User({
             name: 'Alice',
             email: 'alice@example.com',
-        });
-        userStore.add(user);
+        }).save();
         expect(user.id).toBeDefined();
         const dbUser = userStore.getById(user.id)
         expect(dbUser).toEqual(user);

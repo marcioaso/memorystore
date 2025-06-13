@@ -5,13 +5,13 @@ describe('store', () => {
     let myStore
 
     beforeEach(() => {
-        myStore = store.instance('test')
+        myStore = store('test')
         myStore.entries = {}
         myStore.sequence = 0
     })
 
     it('should create a named collection instance', () => {
-        const anotherStore = store.instance('another')
+        const anotherStore = store('another')
         expect(anotherStore).not.toBe(myStore)
         expect(anotherStore.name).toBe('another')
         expect(myStore.name).toBe('test')

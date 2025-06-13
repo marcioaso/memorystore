@@ -1,1 +1,3 @@
-const User = require('./user.js');
+import { User, Messages } from './modules/store/index.js';
+
+console.log(User(), Messages());
