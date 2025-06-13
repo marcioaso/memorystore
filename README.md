@@ -10,6 +10,7 @@ The core is a generic store module, with example modules for `User` and `Message
 - **In-memory storage** with named collections
 - Auto-incrementing IDs
 - CRUD operations: add, get, update, remove
+- Model instances have a `.remove()` method to delete themselves from the store
 - Extensible for custom models (see User and Messages examples)
 - No external dependencies
 
@@ -39,15 +40,15 @@ const found = users.getById(user.id);
 // Update
 users.update(user.id, { name: 'Alicia' });
 
-// Remove
+// Remove by ID
 users.remove(user.id);
 ```
 
 ---
 
-## Example: User Module
+## Model Instance Methods
 
-Located at `modules/store/user`.
+When using the User or Messages modules, model instances have helper methods, including `.remove()`:
 
 ```js
 import User from './modules/store/user.js';
@@ -55,7 +56,8 @@ import User from './modules/store/user.js';
 const user = User({ name: 'Bob', email: 'bob@example.com' });
 user.save();
 
-const found = user.byId(user.id);
+// Remove the user instance from the store
+user.remove(); // Removes from memory and deletes the `id` property
 ```
 
 ---
@@ -77,6 +79,9 @@ message.unlike(2);
 // Commenting
 const comment = message.comment({ user_id: 2, content: 'Nice post!' });
 const comments = message.getComments();
+
+// Remove the message instance from the store
+message.remove();
 ```
 
 ---
