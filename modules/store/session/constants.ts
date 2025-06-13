@@ -1,1 +1,0 @@
-export const EXPIRATION_MINUTES = 15;
