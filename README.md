@@ -10,7 +10,6 @@ The core is a generic store module, with example modules for `User` and `Message
 - **In-memory storage** with named collections
 - Auto-incrementing IDs
 - CRUD operations: add, get, update, remove
-- Model instances have a `.remove()` method to delete themselves from the store
 - Extensible for custom models (see User and Messages examples)
 - No external dependencies
 
