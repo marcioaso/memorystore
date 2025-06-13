@@ -1,7 +1,7 @@
 import store from './index.js';
 
 export default (storeName)=> ({
-    // this will be the prototype for the model instances
+    // shared methods for model prototypes
     store: () => {
         return store(storeName);
     },
