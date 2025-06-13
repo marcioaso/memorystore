@@ -22,7 +22,7 @@ The core store provides a simple API for managing named collections.
 ### Usage
 
 ```js
-import store from './modules/store/db/index.js';
+import store from './modules/db/index.js';
 
 // Create or get a collection
 const users = store('users');
