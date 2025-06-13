@@ -1,5 +1,5 @@
 import store from '../../db/index.js';
-import sharedHelpers from '../../db/helpers.js';
+import sharedPrototype from '../../db/prototype.js';
 import { MessageModel as template } from './model.js';
 
 const storeName = 'message';
@@ -12,7 +12,7 @@ export default function(data = {}) {
         updatedAt: new Date().getTime(),
     };
     Object.setPrototypeOf(newMessage, { // won't appear in Object.keys()
-        ...sharedHelpers(storeName),
+        ...sharedPrototype(storeName),
         byUserId(userId) {
             return store(storeName).getAll()
                 .filter(message => message.user_id === userId);
