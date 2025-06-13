@@ -20,6 +20,10 @@ export default function(data = {}) {
             return store(storeName).getAll()
                 .filter(message => message.user_id === userId);
         },
+        byParentId(parentId) {
+            return store(storeName).getAll()
+                .filter(message => message.parent_id === parentId);
+        },
         like(userId) {
             const messageStore = store(storeName);
             if (!userId) throw new Error('User ID is required to like a message');
@@ -46,6 +50,27 @@ export default function(data = {}) {
             }
             return false;
         },
+        getComments() {
+            const messageStore = store(storeName);
+            return this.messages.map(commentId => messageStore.getById(commentId)).filter(Boolean);
+        },
+        comment(messageData) {
+            const messageStore = store(storeName);
+            if (!messageData || !messageData.content) {
+                throw new Error('Message content is required to comment');
+            }
+
+            const comment = {
+                ...messageData,
+                parent_id: this.id,
+            };
+
+            const addedComment = messageStore.add(comment);
+            this.messages.push(addedComment.id);
+            this.updatedAt = new Date().getTime();
+            messageStore.update(this.id, this);
+            return addedComment;
+        }
     });
     return newMessage;
 };

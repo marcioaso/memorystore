@@ -101,4 +101,73 @@ describe('Messages model', () => {
         const saved = messagesStore.add(msg);
         expect(() => msg.unlike()).toThrow('User ID is required to unlike a message');
     });
+
+    it('should allow recursive (nested) comments', () => {
+        const root = Messages({ user_id: 1, content: 'Root message', messages: [], likes: [] });
+        messagesStore.add(root);
+
+        const comment1 = root.comment({ user_id: 2, content: 'First comment', messages: [], likes: [] });
+        expect(comment1.parent_id).toBe(root.id);
+        expect(root.messages).toContain(comment1.id);
+
+        const wrappedComment1 = Messages(messagesStore.getById(comment1.id));
+        const comment2 = wrappedComment1.comment({ user_id: 3, content: 'Reply to first comment', messages: [], likes: [] });
+        expect(comment2.parent_id).toBe(comment1.id);
+        expect(wrappedComment1.messages).toContain(comment2.id);
+
+        const wrappedComment2 = Messages(messagesStore.getById(comment2.id));
+        const comment3 = wrappedComment2.comment({ user_id: 4, content: 'Reply to reply', messages: [], likes: [] });
+        expect(comment3.parent_id).toBe(comment2.id);
+        expect(wrappedComment2.messages).toContain(comment3.id);
+
+        expect(root.messages).toContain(comment1.id);
+        expect(wrappedComment1.messages).toContain(comment2.id);
+        expect(wrappedComment2.messages).toContain(comment3.id);
+    });
+
+    it('should throw if comment content is missing', () => {
+        const root = Messages({ user_id: 1, content: 'Root', messages: [], likes: [] });
+        messagesStore.add(root);
+        expect(() => root.comment({ user_id: 2 })).toThrow('Message content is required to comment');
+    });
+
+    it('should return all direct child comments with byParentId', () => {
+        const root = Messages({ user_id: 1, content: 'Root', messages: [], likes: [] });
+        messagesStore.add(root);
+
+        const comment1 = root.comment({ user_id: 2, content: 'First comment', messages: [], likes: [] });
+        const comment2 = root.comment({ user_id: 3, content: 'Second comment', messages: [], likes: [] });
+
+        const wrappedComment1 = Messages(messagesStore.getById(comment1.id));
+        const comment3 = wrappedComment1.comment({ user_id: 4, content: 'Reply to first comment', messages: [], likes: [] });
+
+        const rootWrapped = Messages(messagesStore.getById(root.id));
+        const childrenOfRoot = rootWrapped.byParentId(root.id);
+        expect(childrenOfRoot.map(c => c.id)).toEqual([comment1.id, comment2.id]);
+
+        const childrenOfComment1 = wrappedComment1.byParentId(comment1.id);
+        expect(childrenOfComment1.map(c => c.id)).toEqual([comment3.id]);
+
+        const wrappedComment2 = Messages(messagesStore.getById(comment2.id));
+        const childrenOfComment2 = wrappedComment2.byParentId(comment2.id);
+        expect(childrenOfComment2).toEqual([]);
+    });
+
+    it('getComments should return all direct child comments', () => {
+        const root = Messages({ user_id: 1, content: 'Root', messages: [], likes: [] });
+        messagesStore.add(root);
+
+        const comment1 = root.comment({ user_id: 2, content: 'First comment', messages: [], likes: [] });
+        const comment2 = root.comment({ user_id: 3, content: 'Second comment', messages: [], likes: [] });
+
+        const wrappedComment1 = Messages(messagesStore.getById(comment1.id));
+        wrappedComment1.comment({ user_id: 4, content: 'Nested comment', messages: [], likes: [] });
+
+        const rootWrapped = Messages(messagesStore.getById(root.id));
+        const comments = rootWrapped.getComments();
+
+        expect(comments.length).toBe(2);
+        expect(comments.map(c => c.id)).toEqual([comment1.id, comment2.id]);
+        expect(comments.every(c => c.parent_id === root.id)).toBe(true);
+    });
 });
