@@ -11,9 +11,8 @@ export default function(data = {}) {
         createdAt: new Date().getTime(),
         updatedAt: new Date().getTime(),
     };
-    const helpers = sharedHelpers(storeName);
     Object.setPrototypeOf(newMessage, {
-        ...helpers,
+        ...sharedHelpers(storeName),
         byId(id) {
             return store(storeName).getById(id) || null;
         },
