@@ -1,6 +1,6 @@
-import store from '../db/index.js';
+import store from '../../db/index.js';
 import { UserModel as template } from './model.js';
-import sharedHelpers from '../db/helpers.js';
+import sharedHelpers from '../../db/helpers.js';
 
 const storeName = 'user';
 

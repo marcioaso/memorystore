@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import store from '../db/index.js';
+import store from '../../db/index.js';
 import Messages from './index.js';
 
 describe('Messages model', () => {

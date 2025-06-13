@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import store from '../db/index.js';
+import store from '../../db/index.js';
 import User from './index.js';
 
 describe('User model', () => {
@@ -61,7 +61,7 @@ describe('User model', () => {
         const notFound = user.byEmail('nope@example.com');
         expect(notFound).toBeNull();
     });
-    
+
     it('should remove a user instance from the store and delete its id', () => {
         const user = User({ name: 'Remove Me', email: 'remove@example.com' });
         user.save();

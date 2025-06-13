@@ -1,5 +1,5 @@
-import store from '../db/index.js';
-import sharedHelpers from '../db/helpers.js';
+import store from '../../db/index.js';
+import sharedHelpers from '../../db/helpers.js';
 import { MessageModel as template } from './model.js';
 import user from '../user/index.js';
 
